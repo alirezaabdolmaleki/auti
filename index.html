@@ -1,0 +1,213 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autism Helper</title>
+    <link rel="stylesheet" href="./css/bootstrap.css">
+    <script src="./js/JQuery.min.js"></script>
+</head>
+
+<style>
+    body {
+        background-image: url("./images/background.jpg");
+        width: 100%;
+        min-height: 80%;
+    }
+</style>
+
+<body class=" p-3" dir="rtl">
+
+    <div class=" w-100 ">
+        <div class="row text-center ">
+            <div class="col-3">
+                <span> سوال</span>: <span id="question"></span>
+            </div>
+            <div class="col-3">
+                <span> شماره</span>: <span id="counter">1</span>
+            </div>
+            <div class="col-3">
+                <span> تعداد سوال</span>: <span id="length"></span>
+            </div>
+            <div class="col-3">
+                <span> امتیاز</span>: <span id="score">0</span>
+                <div class=" d-block mt-2"><span > تعداد اشتباه</span>: <span id="wrong">0</span></div>
+            </div>
+            <div class="col-3">
+               
+            </div>
+
+        </div>
+        <div id="shapes" class=" mt-4 text-center">
+
+
+        </div>
+
+        <div class=" mt-5 text-center">
+
+
+            <button class="btn btn-success p-3" onclick="start(this)">شروع</button>
+
+
+
+        </div>
+
+        <div id="d-result" class=" mt-5 text-center ">
+
+            <h4 class="d-inline-block">نمره شما:</h4>
+            <h3 class="d-inline-block" id="result">0</h3>
+
+        </div>
+
+
+    </div>
+
+
+    <div class=" position-fixed bottom-0 start-50">
+        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+
+            <h4 class="mb-3 mb-md-0 text-black">© made by alireza imanian</h4>
+
+        </footer>
+    </div>
+
+    <script>
+        var LENGTH = 10; //تعداد سوال
+        var score = 0;
+        var wrong = 0;
+        var counter = 1;
+        init();
+
+
+        function init() {
+            $('#d-result').hide();
+            $('#length').html(LENGTH);
+
+        }
+
+        function animateShapes(speed = 1) {
+            if (speed != 0) {
+                $('img').animate({
+                    deg: 36000
+                }, {
+                    duration: 360000 / speed,
+                    step: function (now) {
+                        $(this).css({
+                            transform: 'rotate(' + now + 'deg)'
+                        });
+                    }
+                });
+            }
+        }
+
+        function start(element) {
+
+            if (element.innerHTML == "شروع") {
+                genrateShapes();
+                genrateQuestion();
+                updateScore();
+                updateWrong();
+                $(element).html('اتمام آزمون')
+            } else {
+                getResult();
+            }
+
+
+
+        }
+
+        function getResult() {
+            $('#shapes').hide();
+            $('#d-result').show();
+            $('#result').html('شما از بیست نمره ' + Math.ceil((20 / LENGTH) * (score - wrong)) + ' میباشد');
+
+        }
+
+        function answerSelected(value) {
+
+            if (answer == value) {
+                updateScore(++score);
+                genrateShapes();
+                genrateQuestion();
+                updateCounter(++counter);
+
+            } else {
+                alert('شما گزینه اشتباه را انتخاب کردید');
+                updateWrong(++wrong);
+
+            }
+
+            if (LENGTH == score)
+                getResult();
+
+        }
+
+        function updateScore(score) {
+            $('#score').html(score);
+        }
+
+        function updateCounter(counter) {
+            $('#counter').html(counter);
+        }
+
+        function updateWrong(wrong) {
+            $('#wrong').html(wrong);
+        }
+
+
+        function genrateQuestion() {
+            var randNum = Math.floor(Math.random() * (questions.length));
+            $('#question').html(questions[randNum].question);
+            answer = questions[randNum].answer;
+            animateShapes(score);
+        }
+     
+
+
+
+        function genrateShapes() {
+            $('#shapes').empty();
+            questions.forEach(element => {
+
+                var $lis = $("#shapes img");
+                var pos = Math.floor(Math.random() * ($lis.length + 1)) - 1;
+                var imaTag = '<img class="m-2" src="' + element.img + '" onclick="answerSelected(\'' + element
+                    .answer +
+                    '\')" class="m-4" width="100px"> '
+                if (pos != -1) {
+                    $lis.eq(pos).after(imaTag);
+                } else {
+                    $("#shapes").append(imaTag);
+                }
+            });
+        }
+
+        var questions = [{
+                question: 'مربع',
+                answer: 'مربع',
+                img: './images/square.png'
+
+            },
+            {
+                question: 'دایره',
+                answer: 'دایره',
+                img: './images/circle.png'
+
+            },
+            {
+                question: 'مستطیل',
+                answer: 'مستطیل',
+                img: './images/Rectangle.png'
+            },
+            {
+                question: 'مثلث',
+                answer: 'مثلث',
+                img: './images/triangle.png'
+
+            },
+        ];
+    </script>
+</body>
+
+</html>
